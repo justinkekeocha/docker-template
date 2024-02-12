@@ -1,0 +1,14 @@
+https://www.youtube.com/watch?v=so50k0t7qWo
+
+https://www.youtube.com/watch?v=kaQQVoEBumY
+
+https://www.youtube.com/watch?v=WahJ91Nrgn0
+
+https://medium.com/@habibullah.127.0.0.1/containerization-of-laravel-php8-1-fpm-mysql-nginx-in-docker-4d5808050033
+
+https://codewithkyrian.com/p/how-to-setup-the-ultimate-php-environment-with-docker
+
+
+https://medium.com/@edouard.courty/make-your-php-8-apps-twice-as-fast-opcache-jit-8d3542276595
+
+https://github.com/emad-zaamout/laravel-docker-aws-deployment-course-start
