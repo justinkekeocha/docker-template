@@ -34,11 +34,11 @@ COPY *.ini /usr/local/etc/php/temp/
 # Check if APP_ENV is set to production and set opposite values for environment variables
 # Adjust ini configration based on APP_ENV
 RUN if [ "$APP_ENV" = "production" ]; then \
-        # echo adds a new line in file before appending contents.
-        { echo; cat /usr/local/etc/php/temp/php-production.ini; } >> /usr/local/etc/php/php.ini; \
+    # echo adds a new line in file before appending contents.
+    { echo; cat /usr/local/etc/php/temp/php-production.ini; } >> /usr/local/etc/php/php.ini; \
     else \
-        # echo adds a new line in file before appending contents.
-        { echo; cat /usr/local/etc/php/temp/php-development.ini; } >> /usr/local/etc/php/php.ini; \
+    # echo adds a new line in file before appending contents.
+    { echo; cat /usr/local/etc/php/temp/php-development.ini; } >> /usr/local/etc/php/php.ini; \
     fi \
     && rm -rf /usr/local/etc/php/temp
 
@@ -62,9 +62,7 @@ RUN groupmod --gid 1001 www-data
 USER www-data
 
 #Start php-fpm server
-#Since we are starting php-fpm in entrypoint file, we can then comment this out
 CMD ["php-fpm"]
 
-# Expose port 9000
 #Port 9000 is for fpm upstream
 EXPOSE 9000
