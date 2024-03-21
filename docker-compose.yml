@@ -2,7 +2,7 @@ version: "3"
 services:
 
     mysql:
-        container_name: ${APP_NAME}_mysql
+        container_name: ${APP_DOMAIN}_mysql
         image: 'mysql/mysql-server:8.0'
         ports:
             - '${DB_PORT}:${DB_PORT}'
@@ -16,7 +16,7 @@ services:
             MYSQL_ALLOW_EMPTY_PASSWORD: 0
         volumes:
             #APP_NAME is used to avoid conflicts with other projects
-            - "~/.docker-volumes/${APP_NAME}/mysql:/var/lib/mysql"
+            - "~/.docker-volumes/${APP_DOMAIN}/mysql:/var/lib/mysql"
             - "./docker/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh"
             - "./docker/mysql/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf"
         networks:
@@ -27,7 +27,7 @@ services:
             timeout: 5s
 
     php:
-        container_name: ${APP_NAME}_php
+        container_name: ${APP_DOMAIN}_php
         build:
             context: ./docker/php
             args:
@@ -42,7 +42,7 @@ services:
             - mysql
 
     phpmyadmin:
-        container_name: ${APP_NAME}_phpmyadmin
+        container_name: ${APP_DOMAIN}_phpmyadmin
         build: ./docker/phpmyadmin
         ports:
             - '${PMA_EXTERNAL_PORT}:80'
@@ -66,7 +66,7 @@ services:
             - backend
 
     cron:
-        container_name: ${APP_NAME}_cron
+        container_name: ${APP_DOMAIN}_cron
         build:
             context: ./docker/cron
         volumes:
