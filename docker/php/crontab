@@ -1,0 +1,4 @@
+# https://github.com/yupmin/laravel-docker-cron/blob/master/docker/crontab
+# https://stackoverflow.com/a/73620742/9780071
+* * * * * root /usr/local/bin/php /var/www/html/artisan schedule:run --no-ansi >> /var/log/cron.log 2>&1
+# Don't remove the empty line at the end of this file. It is required to run the cron job

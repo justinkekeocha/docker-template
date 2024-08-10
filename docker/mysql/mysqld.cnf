@@ -1,0 +1,9 @@
+[mysqld]
+general_log = 1
+general_log_file = /var/lib/mysql/general.log
+
+# Performance enchancement
+# http://www.tocker.ca/2014/03/10/configuring-mysql-to-use-minimal-memory.html
+# This perfomance enchancement is done because mysql takes up much resources in 1gb RAM DROPLET
+#There are other enhancements in the link above, but i have implemented only this one
+max_connections=50

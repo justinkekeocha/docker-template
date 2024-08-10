@@ -1,6 +1,6 @@
-version: "3"
+#No need for version
+#https://github.com/mailcow/mailcow-dockerized/issues/5797#issuecomment-2013037142
 services:
-
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -29,20 +29,38 @@ services:
         build:
             context: ./docker/php
             args:
+                #Don't use env_file here.
+                #It will make env not to reflect until you restart the container
                 APP_ENV: '${APP_ENV}'
+        user: www-data
+        expose:
+            - 9000
+        command: sh -c 'php-fpm'
         volumes:
             - "./:/var/www/html"
             # Do not add any configuration file here, it will crash app
         networks:
             - backend
-            - shared-docker-containers_shared-network
         depends_on:
             - mysql
 
+    nginx:
+        image: 'nginx:1.25-alpine'
+        ports:
+            - '${APP_PORT}:80'
+        volumes:
+            - ./:/var/www/html
+            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+        networks:
+            - backend
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        depends_on:
+            - php
+
     phpmyadmin:
         build: ./docker/phpmyadmin
-        ports:
-            - '${PMA_EXTERNAL_PORT}:80'
         environment:
             #https://docs.phpmyadmin.net/en/release_5_1_4/setup.html#docker-environment-variables
             #https://docs.phpmyadmin.net/en/release_5_1_4/setup.html#customizing-configuration-file-using-docker-compose
@@ -55,8 +73,6 @@ services:
             MAX_EXECUTION_TIME: 600
             MEMORY_LIMIT: '256M'
             UPLOAD_LIMIT: '2G'
-        volumes:
-            - "./docker/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php"
         depends_on:
             - mysql
         networks:
@@ -64,20 +80,31 @@ services:
 
     cron:
         build:
-            context: ./docker/cron
+            context: ./docker/php
+            args:
+                APP_ENV: '${APP_ENV}'
+        command: sh -c 'printenv > /etc/environment && echo "cron starting..." && cron -f'
+        #Needed for bash scripts to access environment variables
         volumes:
             - "./:/var/www/html"
-            # Adding crontabs volume here will crash cron. I don't know why yet
         networks:
             - backend
         depends_on:
             - mysql
-
+    # redis:
+    #     build:
+    #         context: ./docker/redis
+    #         args:
+    #             REDIS_PASSWORD: '${REDIS_PASSWORD}'
+    #     volumes:
+    #         - "~/.docker-volumes/${COMPOSE_PROJECT_NAME}/redis/data:/data"
+    #     networks:
+    #         - backend
 networks:
     backend:
         driver: bridge
-    shared-docker-containers_shared-network:
-        external: true
 volumes:
     mysql:
         driver: local
+    # redis:
+    #     driver: local
